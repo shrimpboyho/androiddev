@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TubeMP3</string>
+    <string name="title_section1">Welcome</string>
+    <string name="title_section2">Help</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Rate</string>
+    <string name="action_settings">Settings</string>
+    <string name="welcome">Welcome to TubeMP3. Download MP3 files from YouTube videos with ease.</string>
+    <string name="linkhint">Paste YouTube Video Link</string>
+
+</resources>
