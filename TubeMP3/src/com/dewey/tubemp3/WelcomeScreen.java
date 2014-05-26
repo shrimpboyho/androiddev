@@ -1,6 +1,19 @@
 package com.dewey.tubemp3;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -10,6 +23,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -144,13 +158,18 @@ public class WelcomeScreen extends ActionBarActivity
             // TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             // textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
             
+            // Set up the mp3 name paste text box
+            final EditText namePaste = (EditText) rootView.findViewById(R.id.editText2);
+            
             // Set up the link paste text box
             final EditText urlPaste = (EditText) rootView.findViewById(R.id.editText1);
             if (Intent.ACTION_SEND.equals(action) && type != null) {
             	if ("text/plain".equals(type)) {
             		String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+            		String finalUrl = sharedText.substring(sharedText.indexOf("http"));
             	    if (sharedText != null) {
-            	        urlPaste.setText(sharedText);
+            	        urlPaste.setText(finalUrl);
+            	        namePaste.setText(sharedText.substring(0, sharedText.indexOf("http")));
             	    }
                 }
             }
@@ -161,13 +180,33 @@ public class WelcomeScreen extends ActionBarActivity
     			@Override
     			public void onClick(View v) {
     				Toast.makeText(getActivity(), "Downloading...", Toast.LENGTH_SHORT).show();
-    				startActivity(new Intent(Intent.ACTION_VIEW, 
-    					    Uri.parse(urlPaste.getText().toString())));
+					performDownload(namePaste.getText().toString(), urlPaste.getText().toString());
     			}
     		});
             return rootView;
         }
+        
+        /* Actually performs the download using an external API
+         * 
+         */
+        public void performDownload(String mp3Title, String youtubeUrl){
+        	String vidCode = youtubeUrl.replace("http://youtu.be/","");
+        	String directLink = "http://youtubeinmp3.com/fetch/?video=https://www.youtube.com/watch?v=" + vidCode;
+        	DownloadManager.Request request = new DownloadManager.Request(Uri.parse(directLink));
+        	request.setDescription(youtubeUrl);
+        	request.setTitle("TubeMP3 Downloading...");
+        	// in order for this if to run, you must use the android 3.2 to compile your app
+        	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        	    request.allowScanningByMediaScanner();
+        	    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        	}
+        	request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "name-of-the-file.ext");
 
+        	// get download service and enqueue file
+        	DownloadManager manager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        	manager.enqueue(request);
+        }
+        
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);

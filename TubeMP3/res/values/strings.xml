@@ -11,5 +11,7 @@
     <string name="welcome">Welcome to TubeMP3. Download MP3 files from YouTube videos with ease.</string>
     <string name="linkhint">Paste YouTube Video Link</string>
     <string name="download">Download MP3</string>
+    <string name="hintmp3name">Enter name for mp3 file</string>
+    <string name="setoptionsstring">Customize MP3</string>
 
 </resources>
