@@ -130,30 +130,16 @@ public class WelcomeScreen extends ActionBarActivity
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_welcome_screen, container, false);
             
-        	// Grab the rootview
-        	View rootView = inflater.inflate(R.layout.fragment_welcome_screen, container, false);
-            
-        	// Get intent, action and MIME type
-            Intent intent = getActivity().getIntent();
-            String action = intent.getAction();
-            String type = intent.getType();
-        	
             /* No need to number the fragments as they appear */
             // TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             // textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
             
             // Set up the link paste text box
             final EditText urlPaste = (EditText) rootView.findViewById(R.id.editText1);
-            if (Intent.ACTION_SEND.equals(action) && type != null) {
-            	if ("text/plain".equals(type)) {
-            		String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-            	    if (sharedText != null) {
-            	        urlPaste.setText(sharedText);
-            	    }
-                }
-            }
              
             // Set up the download button
             final Button button = (Button) rootView.findViewById(R.id.button1);
